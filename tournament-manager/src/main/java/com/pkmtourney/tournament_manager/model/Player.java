@@ -1,4 +1,4 @@
-package model;
+package com.pkmtourney.tournament_manager.model;
 import jakarta.persistence.*;
 import lombok.*;
 
