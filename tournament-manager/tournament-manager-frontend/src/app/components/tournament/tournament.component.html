@@ -1,0 +1,19 @@
+<h2>Create Tournament</h2>
+<form (ngSubmit)="createTournament()">
+  <input [(ngModel)]="newTournament.name" type="text" placeholder="Tournament Name" />
+  <input type="date" [(ngModel)]="newTournament.date" name="date" required>
+  <select [(ngModel)]="newTournament.status" name="status" required>
+    <option value="UPCOMING">Upcoming</option>
+    <option value="ONGOING">Ongoing</option>
+    <option value="FINISHED">Finished</option>
+  </select>
+  <button type="submit">Create</button>
+</form>
+
+<h2>Existing Tournaments</h2>
+<ul>
+  <li *ngFor="let tournament of tournaments">
+    {{ tournament.name }} - {{ tournament.date }} - {{ tournament.status }}
+    <button (click)="deleteTournament(tournament.id)">Delete</button>
+  </li>
+</ul>

@@ -1,0 +1,7 @@
+<h2>Registered Players</h2>
+<ul>
+  <li *ngFor="let player of players">
+    {{ player.name }} ({{ player.deckType }}) - {{ player.email }}
+    <button (click)="deletePlayer(player.id)">Delete</button>
+  </li>
+</ul>
