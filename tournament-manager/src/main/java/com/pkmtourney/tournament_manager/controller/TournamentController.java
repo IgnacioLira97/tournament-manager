@@ -1,52 +1,52 @@
 package com.pkmtourney.tournament_manager.controller;
-import com.pkmtourney.tournament_manager.model.Tournament;
-import com.pkmtourney.tournament_manager.service.TournamentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.pkmtourney.tournament_manager.dto.StandingsEntry;
+import com.pkmtourney.tournament_manager.dto.TournamentRequest;
+import com.pkmtourney.tournament_manager.model.Match;
+import com.pkmtourney.tournament_manager.model.Tournament;
+import com.pkmtourney.tournament_manager.service.TournamentService;
+
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/tournaments")
-@CrossOrigin // allows frontend access (Angular)
-// This class will handle HTTP requests related to tournaments
-
-
-
-
+@RequestMapping("/api/tournaments")
 public class TournamentController {
+
     private final TournamentService tournamentService;
 
-    @Autowired
     public TournamentController(TournamentService tournamentService) {
         this.tournamentService = tournamentService;
     }
 
-    @GetMapping
-    public List<Tournament> getAllTournaments() {
-        return tournamentService.getAllTournaments();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Tournament> getTournamentById(@PathVariable int id) {
-        return tournamentService.getTournamentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PostMapping
-    public Tournament createTournament(@RequestBody Tournament tournament) {
-        return tournamentService.createTournament(tournament);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Tournament create(@RequestBody @Valid TournamentRequest request) {
+        return tournamentService.create(request);
     }
 
-    @PutMapping("/{id}")
-    public Tournament updateTournament(@PathVariable int id, @RequestBody Tournament tournament) {
-        return tournamentService.updateTournament(id, tournament);
+    @GetMapping
+    public List<Tournament> findAll() {
+        return tournamentService.findAll();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTournament(@PathVariable int id) {
-        tournamentService.deleteTournament(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}/matches")
+    public List<Match> listMatches(@PathVariable Long id) {
+        return tournamentService.listMatches(id);
+    }
+
+    @GetMapping("/{id}/standings")
+    public List<StandingsEntry> standings(@PathVariable Long id) {
+        return tournamentService.buildStandings(id);
     }
 }

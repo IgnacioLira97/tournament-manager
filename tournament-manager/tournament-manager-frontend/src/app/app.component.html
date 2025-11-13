@@ -1,0 +1,124 @@
+<div class="shell">
+  <header>
+    <h1>Pokémon TCG Night</h1>
+    <p>Track every battle with a cozy Spring Boot + Angular setup.</p>
+  </header>
+
+  <p class="banner" *ngIf="bannerMessage">{{ bannerMessage }}</p>
+
+  <section>
+    <h2>Players</h2>
+    <div class="form-row">
+      <input
+        type="text"
+        placeholder="Ash Ketchum"
+        [(ngModel)]="newPlayerName"
+        name="playerName"
+      />
+      <button (click)="createPlayer()">Add player</button>
+    </div>
+    <ul class="pill-list">
+      <li *ngFor="let player of players">{{ player.name }}</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Tournaments</h2>
+    <div class="form-row">
+      <input
+        type="text"
+        placeholder="League Challenge #5"
+        [(ngModel)]="newTournamentName"
+        name="tournamentName"
+      />
+      <input type="date" [(ngModel)]="newTournamentDate" name="tournamentDate" />
+      <button (click)="createTournament()">Create</button>
+    </div>
+
+    <label for="tournamentSelect">Active tournament</label>
+    <select id="tournamentSelect" (change)="selectTournament($event.target.value)">
+      <option value="" selected disabled>Select one...</option>
+      <option *ngFor="let tournament of tournaments" [value]="tournament.id">
+        {{ tournament.name }}
+      </option>
+    </select>
+  </section>
+
+  <section>
+    <h2>Record a match</h2>
+    <div class="form-row">
+      <select [(ngModel)]="matchForm.tournamentId" name="matchTournament">
+        <option value="">Tournament</option>
+        <option *ngFor="let tournament of tournaments" [value]="tournament.id">
+          {{ tournament.name }}
+        </option>
+      </select>
+      <select [(ngModel)]="matchForm.playerOneId" name="matchPlayerOne">
+        <option value="">Player one</option>
+        <option *ngFor="let player of players" [value]="player.id">{{ player.name }}</option>
+      </select>
+      <select [(ngModel)]="matchForm.playerTwoId" name="matchPlayerTwo">
+        <option value="">Player two</option>
+        <option *ngFor="let player of players" [value]="player.id">{{ player.name }}</option>
+      </select>
+      <select [(ngModel)]="matchForm.outcome" name="matchOutcome">
+        <option *ngFor="let outcome of matchOutcomes" [value]="outcome.value">
+          {{ outcome.label }}
+        </option>
+      </select>
+      <button (click)="recordMatch()">Save</button>
+    </div>
+  </section>
+
+  <section *ngIf="selectedTournamentId">
+    <h2>Standings</h2>
+    <table *ngIf="standings.length; else emptyStandings">
+      <thead>
+        <tr>
+          <th>Trainer</th>
+          <th>W</th>
+          <th>L</th>
+          <th>T</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of standings">
+          <td>{{ row.playerName }}</td>
+          <td>{{ row.wins }}</td>
+          <td>{{ row.losses }}</td>
+          <td>{{ row.ties }}</td>
+          <td>{{ row.points }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #emptyStandings>
+      <p>Standings will appear after you record the first match.</p>
+    </ng-template>
+  </section>
+
+  <section *ngIf="selectedTournamentId">
+    <h2>Matches</h2>
+    <table *ngIf="matches.length; else emptyMatches">
+      <thead>
+        <tr>
+          <th>Player one</th>
+          <th>Player two</th>
+          <th>Outcome</th>
+          <th>When</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let match of matches">
+          <td>{{ match.playerOne.name }}</td>
+          <td>{{ match.playerTwo.name }}</td>
+          <td>{{ match.outcome }}</td>
+          <td>{{ match.playedAt | date: 'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #emptyMatches>
+      <p>No matches recorded yet.</p>
+    </ng-template>
+  </section>
+</div>
